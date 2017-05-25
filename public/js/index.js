@@ -17,6 +17,15 @@ socket.on('newMessage', function (message) {
   $('#messageList').append(li);
 });
 
+socket.on('newLocationMessage', function (locMessage) {
+  var li = $('<li></li>');
+  var a=$('<a target="_blank">My current location</a>');
+
+  li.text(`${locMessage.from}: `)
+  a.attr('href',locMessage.url);
+  li.append(a);
+  $('#messageList').append(li);
+});
 
 $('#message-form').on('submit', function(e){
   e.preventDefault();
@@ -25,7 +34,23 @@ $('#message-form').on('submit', function(e){
     from:'Sameep',
     text:$('[name=message]').val()
   }, function(){
-
   });
+});
 
+var locButton = $('#sendLocation');
+locButton.on('click', function (e) {
+
+  if(!navigator.geolocation){
+    return alert('Geolocation not supported by your browser!!');
+  }
+
+  navigator.geolocation.getCurrentPosition(function (location){
+      console.log(location);
+      socket.emit('createLocationMessage', {
+        latitude: location.coords.latitude,
+        longitude:location.coords.longitude
+      });
+  }, function(err){
+    alert('Failed to fetch location');
+  });
 });
