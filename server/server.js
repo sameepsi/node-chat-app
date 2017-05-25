@@ -24,11 +24,13 @@ io.on('connection', (socket) => {
   //socket.broadcast.emit from admin text new user joined
 
 
-  socket.on('createMessage', (message)=>{
+  socket.on('createMessage', (message, callback)=>{
     console.log('Create Message', message)
     //emits an event to every single connection
     io.emit('newMessage', generateMessage(message.from, message.text));
-
+    callback({
+      status:'success'
+    });
     //it will fire event to all but this particular socket
     // socket.broadcast.emit('newMessage', {
     //   from:message.from,

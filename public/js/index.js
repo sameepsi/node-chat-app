@@ -7,6 +7,25 @@ socket.on('disconnect', function () {
   console.log('Disconnected from the server');
 });
 
-socket.on('newMessage', function (data) {
-  console.log('New Message', data);
+socket.on('newMessage', function (message) {
+
+  console.log('New Message', message);
+
+  var li = $('<li></li>');
+  li.text(`${message.from}: ${message.text}`)
+
+  $('#messageList').append(li);
+});
+
+
+$('#message-form').on('submit', function(e){
+  e.preventDefault();
+
+  socket.emit('createMessage', {
+    from:'Sameep',
+    text:$('[name=message]').val()
+  }, function(){
+
+  });
+
 });
