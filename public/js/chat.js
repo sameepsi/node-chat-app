@@ -74,9 +74,8 @@ $('#message-form').on('submit', function(e){
   e.preventDefault();
   var messageTextBox=$('[name=message]');
   socket.emit('createMessage', {
-    from:'Sameep',
-    text:messageTextBox.val()
-  }, function(){
+      text:messageTextBox.val()
+  }, function(ack){
       messageTextBox.val('');
   });
 });
@@ -94,12 +93,18 @@ locButton.on('click', function (e) {
       socket.emit('createLocationMessage', {
         latitude: location.coords.latitude,
         longitude:location.coords.longitude
+      }, function(ack){
+        if(ack.status==='failure'){
+          alert('Failed to send location');
+        }
       });
       locButton.removeAttr('disabled');
       locButton.text('Send location');
   }, function(err){
     locButton.removeAttr('disabled');
     locButton.text('Send location');
+
     alert('Failed to fetch location');
+
   });
 });
