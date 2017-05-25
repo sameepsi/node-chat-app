@@ -19,18 +19,28 @@ io.on('connection', (socket) => {
   console.log('New user connected');
 
   //welcome to the chat app
-  socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app, You are now connected!!'));
 
-  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user- Sameep joined'));
   //socket.broadcast.emit from admin text new user joined
 
   socket.on('join', (params, callback) => {
     var name = params.name;
     var room = params.room;
+    console.log(name,room);
     if(!isRealString(name) || !isRealString(room)){
       callback('Name and room name are required');
     }
     else{
+      //io.emit -> io.to(room).emit
+      //socket.broadcast.emit -> socket.braodcast.to(room).emit
+      //socket.emit
+
+      socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app, You are now connected!!'));
+
+      socket.broadcast.to(room).emit('newMessage', generateMessage('Admin', `New user- ${name} joined`));
+      socket.join(room);
+
+
+
       callback();
     }
   });
