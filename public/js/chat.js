@@ -103,8 +103,22 @@ locButton.on('click', function (e) {
   }, function(err){
     locButton.removeAttr('disabled');
     locButton.text('Send location');
-
     alert('Failed to fetch location');
-
   });
 });
+
+//Make chat room case-insensitive
+//Make user names unique
+//List of active chat rooms
+//Chatting in multiple rooms at the same time
+
+
+
+
+
+
+
+
+
+
+//
