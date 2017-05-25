@@ -5,6 +5,7 @@ const http = require('http');
 
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const{isRealString} = require('./utils/validation');
+const {Users} = require('./utils/users');
 
 const publicPath = path.join(__dirname, '/../public');
 const port = process.env.PORT || 3000;
@@ -12,6 +13,7 @@ const port = process.env.PORT || 3000;
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
+var users = new Users();
 
 app.use(express.static(publicPath));
 
@@ -27,22 +29,23 @@ io.on('connection', (socket) => {
     var room = params.room;
     console.log(name,room);
     if(!isRealString(name) || !isRealString(room)){
-      callback('Name and room name are required');
+      return callback('Name and room name are required');
     }
-    else{
+
       //io.emit -> io.to(room).emit
       //socket.broadcast.emit -> socket.braodcast.to(room).emit
       //socket.emit
 
-      socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app, You are now connected!!'));
-
-      socket.broadcast.to(room).emit('newMessage', generateMessage('Admin', `New user- ${name} joined`));
       socket.join(room);
 
+      users.removeUser(socket.id);
+      users.addUser(socket.id, name, room);
 
-
+      io.to(room).emit('updateUserList', users.getUserList(room));
+      socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app, You are now connected!!'));
+      socket.broadcast.to(room).emit('newMessage', generateMessage('Admin', `New user- ${name} joined`));
       callback();
-    }
+
   });
 
   socket.on('createMessage', (message, callback)=>{
@@ -57,7 +60,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+    var user = users.removeUser(socket.id);
+
+    if(user){
+      io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+      io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} left the room`));
+    }
   });
 });
 
