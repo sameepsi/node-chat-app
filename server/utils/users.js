@@ -55,6 +55,16 @@ class Users {
     return roomNames;
   }
 
+  //this method will check if user already exists. It will return boolean
+  userExists(name) {
+    var user = _.find(this.users, (user) => {
+        return user.name===name;
+    });
+    if(user){
+      return true;
+    }
+    return false;
+  }
   //Will return array of rooms which user has joined or currently part of
   getUserRooms(user) {
 

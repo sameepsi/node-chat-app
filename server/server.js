@@ -38,6 +38,10 @@ io.on('connection', (socket) => {
     }
     var upperCaseRoom = room.toUpperCase();
 
+    var userExists = users.userExists(name);
+    if(userExists){
+      return callback({status:'failure', reason:'User already exists'});
+    }
       //io.emit -> io.to(room).emit
       //socket.broadcast.emit -> socket.braodcast.to(room).emit
       //socket.emit
@@ -62,7 +66,7 @@ io.on('connection', (socket) => {
     io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
     return callback({status:'success'});
   }
-  callback({status:'failure'});
+  callback({status:'failure', reason:'Enter valid text'});
   });
 
   socket.on('createLocationMessage', (coords, callback) => {
