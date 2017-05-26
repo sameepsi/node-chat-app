@@ -4,12 +4,18 @@ function getAllRooms () {
     type:'GET',
     success: function(data){
       var availableRooms = $('#availableRooms');
-      availableRooms.on('change', roomSelected);
+      availableRooms.on('change', roomSelected(this.value));
       data.forEach((room) => {
+
         var option = $('<option></option>');
         option.attr('value', room).text(room);
         availableRooms.append(option);
+        if(data[0]===room){
+
+          roomSelected(room);
+        }
       });
+
     },
     error: function(err){
       console.log(err);
@@ -17,7 +23,6 @@ function getAllRooms () {
   });
 }
 
-function roomSelected() {
-  $('input[name=room]').val(this.value);
-  console.log(this.value);
+function roomSelected(room) {
+  $('input[name=room]').val(room);
 }
