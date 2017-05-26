@@ -46,7 +46,19 @@ class Users {
     return namesArray;
   }
 
+  // Will return list of all currently available rooms
+  getAllRooms() {
+    var users = _.uniqBy(this.users, 'room');
+    var roomNames = users.map((user) => {
+      return user.room;
+    });
+    return roomNames;
+  }
 
+  //Will return array of rooms which user has joined or currently part of
+  getUserRooms(user) {
+
+  }
 }
 
 module.exports={Users};

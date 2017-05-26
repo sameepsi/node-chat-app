@@ -17,6 +17,10 @@ var users = new Users();
 
 app.use(express.static(publicPath));
 
+app.get('/chat/rooms', (req, res) => {
+  res.send(users.getAllRooms());
+});
+
 io.on('connection', (socket) => {
   console.log('New user connected');
 
@@ -44,6 +48,7 @@ io.on('connection', (socket) => {
       io.to(room).emit('updateUserList', users.getUserList(room));
       socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app, You are now connected!!'));
       socket.broadcast.to(room).emit('newMessage', generateMessage('Admin', `New user- ${name} joined`));
+
       callback();
 
   });

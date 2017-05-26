@@ -9,10 +9,12 @@
 </head>
 
 <body class='centered-form'>
+  <script src = '/libs/jquery-3.2.1.min.js'></script>
+  <script src='./js/index.js'></script>
   <div class='centered-form__form'>
     <form action='/chat.html'>
       <div class='form-field'>
-        <h3>Join a chat</h3>
+        <h3>Chatty</h3>
       <div>
       <div class='form-field'>
         <label>Display name</label>
@@ -23,10 +25,17 @@
         <input type='text' name="room"/>
       <div>
       <div class='form-field'>
+        <label>Availabl rooms</label>
+          <select id='availableRooms' name='rooms'></select>
+      <div>
+      <div class='form-field'>
         <button>Join</button>
       <div>
 
     </form>
   <div>
+    <script>
+    getAllRooms();
+    </script>
 </body>
 </html>
