@@ -114,9 +114,10 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     var user = users.removeUser(socket.id);
-    var isRoomEmpty = users.checkIfRoomEmpyt(user.room);
+
 
     if(user){
+      var isRoomEmpty = users.checkIfRoomEmpyt(user.room);
       io.to(user.room).emit('updateUserList', users.getUserList(user.room));
       io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} left the room`));
     }

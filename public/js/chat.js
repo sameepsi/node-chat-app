@@ -1,5 +1,24 @@
 var socket = io();
 var name;
+var inFocus = true;
+var audio= new Audio("/notifications/notification.mp3");
+$(window).on('focus', function(e){
+  inFocus = true;
+  blinkTitleStop("Chatty");
+});
+
+$(window).on('blur', function(e){
+  inFocus = false;
+  blinkTitleStop("Chatty");
+});
+
+function setNotification(text){
+  if(!inFocus){
+    audio.play();
+    blinkTitle(text,"Chatty",1000);
+  }
+}
+
 function scrollToBottom() {
   //selectors
   var messages = $('#messageList');
@@ -57,6 +76,7 @@ socket.on('newMessage', function (message) {
   });
   $('#messageList').append(html);
   scrollToBottom();
+  setNotification(message.from);
 });
 
 socket.on('newLocationMessage', function (locMessage) {
@@ -70,6 +90,7 @@ socket.on('newLocationMessage', function (locMessage) {
 
   $('#messageList').append(html);
   scrollToBottom();
+  setNotification(locMessage.from);
 });
 
 $('#message-form').on('submit', function(e){
@@ -146,6 +167,7 @@ socket.on("attachmentMessage", function(message){
 
   $('#messageList').append(html);
   scrollToBottom();
+  setNotification(from);
 });
 
 function uploadFile(file, signedRequest, url){
