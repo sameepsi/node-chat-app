@@ -14,9 +14,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.58.0",
     "express": "^4.15.3",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
-    "socket.io": "^2.0.1"
+    "socket.io": "^2.0.1",
+    "socket.io-stream": "^0.9.1"
   }
 }

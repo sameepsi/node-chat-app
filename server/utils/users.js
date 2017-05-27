@@ -55,6 +55,18 @@ class Users {
     return roomNames;
   }
 
+  checkIfRoomEmpyt(room) {
+    var users = this.users.filter((user) => {
+        return user.room===room;
+    });
+    console.log(users);
+    if(Object.keys(users).length>0){
+      return false;
+    }
+    return true;
+  }
+
+
   //this method will check if user already exists. It will return boolean
   userExists(name) {
     var user = _.find(this.users, (user) => {

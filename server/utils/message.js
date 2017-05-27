@@ -17,4 +17,13 @@ var generateLocationMessage = (from, latitude, longitude) => {
     createAt: moment.valueOf()
   };
 };
-module.exports = {generateMessage, generateLocationMessage};
+
+var generateAttachmentMessage = (from, fileName, fileType, url) => {
+  return {
+    from,
+    fileName,
+    fileType,
+    url
+  };
+};
+module.exports = {generateMessage, generateLocationMessage, generateAttachmentMessage};

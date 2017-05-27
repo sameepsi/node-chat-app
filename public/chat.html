@@ -21,6 +21,13 @@
     <div class='chat__footer'>
     <!-- to submit messages -->
     <form id='message-form'>
+      <div class="image-upload">
+        <label for="file-input">
+        <img src="/images/attachment.png"/>
+    </label>
+
+    <input id="file-input" type="file"/>
+  </div>
       <input type="text" name="message"
       placeholder="Enter message here...." autofocus autocomplete="off"></input>
       <button onClick="">send</button>
@@ -52,6 +59,33 @@
       <p>
         <a target='_blank' href="{{url}}">My current location</a>
       </p>
+    </div>
+  </li>
+</script>
+
+<script id='otherAttachmentMessageTemplate' type='text/template'>
+  <li class='message'>
+    <div class='message__title'>
+      <h4>{{from}}</h4>
+      <span>{{createdAt}}</span>
+    </div>
+    <div class='message__body attachment' id='{{id}}'>
+      <div class="{{class}}"></div>
+      <!-- <p>
+        <a target='_blank'id={{id}} href="{{url}}">{{fileName}}</a>
+      </p> -->
+    </div>
+  </li>
+</script>
+
+<script id='imageMessageTemplate' type='text/template'>
+  <li class='message'>
+    <div class='message__title'>
+      <h4>{{from}}</h4>
+      <span>{{createdAt}}</span>
+    </div>
+    <div class='message__body attachment'>
+      <div id="{{id}}" class="{{class}}"></div>
     </div>
   </li>
 </script>

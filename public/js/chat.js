@@ -1,5 +1,5 @@
 var socket = io();
-
+var name;
 function scrollToBottom() {
   //selectors
   var messages = $('#messageList');
@@ -16,10 +16,12 @@ function scrollToBottom() {
   }
 }
 
+
+
 socket.on('connect', function() {
   console.log('Connected to the server');
   var params = $.deparam(window.location.search);
-
+  name = params.name;
   socket.emit('join', params, function (err) {
       if (err) {
         alert(err.reason);
@@ -78,6 +80,102 @@ $('#message-form').on('submit', function(e){
   }, function(ack){
       messageTextBox.val('');
   });
+});
+
+function getSignedRequest(file){
+    socket.emit('initiateFileUpload', {
+    fileName: file.name,
+    fileType:file.type
+  },(data)=>{
+    if(data.status==='failure'){
+    return  alert('Failed to upload file');
+    }
+    uploadFile(file, data.data.signedRequest, data.data.url);
+  });
+
+}
+
+function generateUniqueId(){
+  return new Date().getTime();
+}
+
+function checkIfImageFile(fileType){
+  var validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+if ($.inArray(fileType, validImageTypes) < 0) {
+     return false;
+}
+return true;
+}
+
+function uploadFile(file, signedRequest, url){
+
+  var formattedTime = moment().format('h:mm a');
+  var html;
+  var id = generateUniqueId();
+  if(checkIfImageFile(file.type)){
+  var messageTemplate = $('#imageMessageTemplate').html();
+   html = Mustache.render(messageTemplate, {
+    from:name,
+    createdAt:formattedTime,
+    class:'loader-large',
+    id
+  });
+
+}
+else{
+  var messageTemplate = $('#otherAttachmentMessageTemplate').html();
+
+    html = Mustache.render(messageTemplate, {
+    from:name,
+    createdAt:formattedTime,
+    class:'loader-small',
+    id
+  });
+
+}
+
+$('#messageList').append(html);
+scrollToBottom();
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('PUT', signedRequest);
+  console.log(signedRequest);
+  xhr.onreadystatechange = () => {
+    if(xhr.readyState === 4){
+      if(xhr.status === 200){
+        console.log(url);
+        if(checkIfImageFile(file.type)){
+        $(`#${id}`).removeAttr('class');
+        var style = "background-image: url('"+url+"'); width: 154px; height: 158px;";
+        $(`#${id}`).attr('style', style);
+        $(`#${id}`).attr('class', 'image-div');
+      }
+      else {
+        $(`#${id}`).empty();
+        $(`#${id}`).append($('<p></p>').append($('<a target="_blank"></a>').attr('href',url).text(file.name)));
+      }
+        console.log(file.type);
+        socket.on('fileUploadedSuccessfully', {
+          url,
+          fileName:file.name,
+          fileType:file.type
+        });
+
+      }
+      else{
+        alert('Unable to upload file..');
+      }
+    }
+  };
+  xhr.send(file);
+}
+
+$('#file-input').change(function(e) {
+  var file = e.target.files[0];
+  if(file == null){
+       return alert('No file selected.');
+     }
+     getSignedRequest(file);
 });
 
 var locButton = $('#sendLocation');
