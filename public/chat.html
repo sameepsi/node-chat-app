@@ -70,10 +70,10 @@
       <span>{{createdAt}}</span>
     </div>
     <div class='message__body attachment' id='{{id}}'>
-      <div class="{{class}}"></div>
-      <!-- <p>
-        <a target='_blank'id={{id}} href="{{url}}">{{fileName}}</a>
-      </p> -->
+      <div class="{{class}}" style="{{divStyle}}"></div>
+      <p style="{{pStyle}}">
+        <a target='_blank' href="{{url}}">{{fileName}}</a>
+      </p>
     </div>
   </li>
 </script>
@@ -85,7 +85,7 @@
       <span>{{createdAt}}</span>
     </div>
     <div class='message__body attachment'>
-      <div id="{{id}}" class="{{class}}"></div>
+      <div id="{{id}}" class="{{class}}" style="{{style}}"></div>
     </div>
   </li>
 </script>

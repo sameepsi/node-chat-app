@@ -106,6 +106,47 @@ if ($.inArray(fileType, validImageTypes) < 0) {
 }
 return true;
 }
+socket.on("attachmentMessage", function(message){
+    var id=generateUniqueId();
+    var fileName = message.fileName;
+    var fileType = message.fileType;
+    var from = message.from;
+    var url = message.url;
+
+    var formattedTime = moment().format('h:mm a');
+    var html;
+    var id = generateUniqueId();
+    if(checkIfImageFile(fileType)){
+    var style = "background-image: url('"+url+"'); width: 154px; height: 158px;";
+    var messageTemplate = $('#imageMessageTemplate').html();
+     html = Mustache.render(messageTemplate, {
+      from,
+      createdAt:formattedTime,
+      class:'image-div',
+      id,
+      style
+    });
+
+  }
+  else{
+    var messageTemplate = $('#otherAttachmentMessageTemplate').html();
+
+      html = Mustache.render(messageTemplate, {
+      from,
+      createdAt:formattedTime,
+      class:'loader-small',
+      divStyle:'display:none',
+
+      fileName,
+      url,
+      id
+    });
+
+  }
+
+  $('#messageList').append(html);
+  scrollToBottom();
+});
 
 function uploadFile(file, signedRequest, url){
 
@@ -129,6 +170,7 @@ else{
     from:name,
     createdAt:formattedTime,
     class:'loader-small',
+    pStyle:'display:none',
     id
   });
 
@@ -155,7 +197,7 @@ scrollToBottom();
         $(`#${id}`).append($('<p></p>').append($('<a target="_blank"></a>').attr('href',url).text(file.name)));
       }
         console.log(file.type);
-        socket.on('fileUploadedSuccessfully', {
+        socket.emit('fileUploadedSuccessfully', {
           url,
           fileName:file.name,
           fileType:file.type

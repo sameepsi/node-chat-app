@@ -93,6 +93,7 @@ io.on('connection', (socket) => {
   socket.on('fileUploadedSuccessfully', (message) =>{
       var user = users.getUser(socket.id);
       if(user){
+        console.log('room',user.room);
         socket.broadcast.to(user.room).emit('attachmentMessage', generateAttachmentMessage(user.name, message.fileName, message.fileType, message.url));
       }
   } );
