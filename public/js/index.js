@@ -1,3 +1,29 @@
+
+if(typeof(Storage) !=='undefined'){
+  localStorage.removeItem("name");
+  localStorage.removeItem("room");
+}
+
+function isValidString(str){
+  return typeof str==='string' && str.trim().length > 0;
+}
+
+function submitForm() {
+  var name = $('#name').val();
+  var room = $('#room').val();
+  if(isValidString(name) && isValidString(room)){
+    if (typeof(Storage) !== "undefined") {
+    localStorage.setItem('name', name);
+    localStorage.setItem('room', room);
+    window.location.href='/chat.html';
+} else {
+    window.location.href='/chat.html?name='+name+'&room='+room;
+}
+  }
+  else{
+    alert('Please enter valid name and room!!');
+  }
+}
 function getAllRooms () {
   $.ajax({
     url:'/chat/rooms',

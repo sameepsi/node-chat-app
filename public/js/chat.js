@@ -40,6 +40,11 @@ function scrollToBottom() {
 socket.on('connect', function() {
   console.log('Connected to the server');
   var params = $.deparam(window.location.search);
+  if(params===undefined || Object.keys(params).length===0){
+    params={};
+    params.room=localStorage.room;
+    params.name=localStorage.name;
+  }
   name = params.name;
   socket.emit('join', params, function (err) {
       if (err) {
