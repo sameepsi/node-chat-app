@@ -12,6 +12,15 @@ $(window).on('blur', function(e){
   blinkTitleStop("Chatty");
 });
 
+function findAndConvertEmojis(text){
+  var md = window.markdownit().use(window.markdownitEmoji);
+  md.renderer.rules.emoji = function(token, idx) {
+  return twemoji.parse(token[idx].content);
+};
+
+    return md.render(text);
+}
+
 function setNotification(text){
   if(!inFocus){
     audio.play();
@@ -71,15 +80,18 @@ socket.on('updateUserList', function (users) {
 });
 
 socket.on('newMessage', function (message) {
-
+  var id = generateUniqueId();
   var formattedTime = moment(message.createdAt).format('h:mm a');
   var messageTemplate = $('#messageTemplate').html();
   var html = Mustache.render(messageTemplate,{
-    text:message.text,
+    id,
     from:message.from,
     createdAt:formattedTime
   });
   $('#messageList').append(html);
+  var abc = findAndConvertEmojis(message.text);
+  $(`#${id}`).append(abc);
+
   scrollToBottom();
   setNotification(message.from);
 });

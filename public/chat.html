@@ -43,8 +43,8 @@
       <h4>{{from}}</h4>
       <span>{{createdAt}}</span>
     </div>
-    <div class='message__body'>
-      <p>{{text}}</p>
+    <div class='message__body' id="{{id}}">
+      
     </div>
   </li>
 </script>
@@ -96,6 +96,9 @@
   <script src = '/libs/deparam.js'></script>
   <script src='/socket.io/socket.io.js'></script>
   <script type="text/javascript" src="/libs/blink.js"></script>
+  <script src="/libs/markdown-it.js"></script>
+  <script src="/libs/markdown-it-emoji.js"></script>
+  <script src="/libs/twemoji.js"></script>
   <script src='./js/chat.js'></script>
 
 
