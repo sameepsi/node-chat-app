@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
 
       users.removeUser(socket.id);
       users.addUser(socket.id, name, upperCaseRoom);
-
+      console.log(users.getUserList(upperCaseRoom));
       io.to(upperCaseRoom).emit('updateUserList', users.getUserList(upperCaseRoom));
       socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app, You are now connected!!'));
       socket.broadcast.to(upperCaseRoom).emit('newMessage', generateMessage('Admin', `New user- ${name} joined`));
@@ -71,6 +71,17 @@ io.on('connection', (socket) => {
     return callback({status:'success'});
   }
   callback({status:'failure', reason:'Enter valid text'});
+  });
+
+  socket.on('userActiveStatus', (message, callback) => {
+    var user = users.getUser(socket.id);
+    users.setUserStatus(socket.id, message.active)
+    if(user){
+      io.to(user.room).emit('userActiveStatus', {
+        user: user.name,
+        status: message.active
+      });
+    }
   });
 
   socket.on('initiateFileUpload', (message, callback)=>{

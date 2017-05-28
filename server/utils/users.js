@@ -11,7 +11,7 @@ class Users {
   }
 
   addUser(id, name, room){
-    var user={id, name, room};
+    var user={id, name, room, status:true};
     this.users.push(user);
     return user;
   }
@@ -23,6 +23,12 @@ class Users {
     return user;
   }
 
+  setUserStatus(id, status) {
+    var user = _.find(this.users, (user) => {
+      return user.id===id;
+    })
+    user.status = status;
+  }
 
   removeUser(id) {
     var user = this.getUser(id);
@@ -41,7 +47,7 @@ class Users {
         return user.room===room;
     });
     var namesArray = users.map((user) => {
-      return user.name;
+      return {name:user.name, status:user.status};
     });
     return namesArray;
   }

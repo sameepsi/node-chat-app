@@ -1,15 +1,34 @@
 var socket = io();
 var name;
 var inFocus = true;
+var userActive = true;
 var audio= new Audio("/notifications/notification.mp3");
+var userStatusTimeOutId;
 $(window).on('focus', function(e){
   inFocus = true;
   blinkTitleStop("Chatty");
+clearTimeout(userStatusTimeOutId);
+  if(!userActive){
+
+    socket.emit('userActiveStatus',{
+      active:true
+    });
+    userActive = true;
+  }
 });
 
 $(window).on('blur', function(e){
   inFocus = false;
   blinkTitleStop("Chatty");
+  if(userActive){
+  userStatusTimeOutId=setTimeout(function(){
+    socket.emit('userActiveStatus',{
+      active:false
+    });
+    userActive = false;
+  },60000 * 2);
+}
+
 });
 
 function findAndConvertEmojis(text){
@@ -65,18 +84,39 @@ socket.on('connect', function() {
   });
 });
 
+socket.on('userActiveStatus', function(message){
+  var span = $(`#${message.user}`);
+  var style;
+  if(message.status){
+    style = "background: rgb(66, 183, 42);border-radius: 50%;display: inline-block;height: 10px;float: right;width: 10px;";
+  }
+  else {
+    style="background: rgb(255, 165, 0);border-radius: 50%;display: inline-block;height: 10px;float: right;width: 10px;";
+  }
+
+  span.removeAttr('style');
+  span.attr('style', style)
+});
+
 socket.on('disconnect', function () {
   console.log('Disconnected from the server');
 });
 
 socket.on('updateUserList', function (users) {
 
-    var ol = $('<ol></ol>');
+    var ul = $('<ul></ul>');
 
     users.forEach((user) => {
-      ol.append($('<li></li>').text(user));
+      var style;
+      if(user.status){
+        style = "background: rgb(66, 183, 42);border-radius: 50%;display: inline-block;height: 10px;float: right;width: 10px;";
+      }
+      else {
+        style="background: rgb(255, 165, 0);border-radius: 50%;display: inline-block;height: 10px;float: right;width: 10px;";
+      }
+      ul.append($('<li></li>').text(user.name).append($('<span></span>').attr('style', style).attr('id', user.name)));
     });
-    $('#users').html(ol);
+    $('#users').html(ul);
 });
 
 socket.on('newMessage', function (message) {
